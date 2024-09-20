@@ -20,6 +20,9 @@ class MichaelJinShunLeongQuestion1Stack(Stack):
             self, "PostLambdaFunction",
             runtime=_lambda.Runtime.PYTHON_3_9,
             handler="index.handler",
+            environment={
+                'QUEUE_URL': queue.queue_url
+            },
             code=_lambda.Code.from_inline(
                 """
 import json
@@ -57,15 +60,15 @@ def handler(event, context):
 
                 """
             ),
-            environment={
-                'QUEUE_URL': queue.queue_url
-            }
         )
 
         get_lambda = _lambda.Function(
             self, "GetLambdaHandler",
             runtime=_lambda.Runtime.PYTHON_3_9,
             handler="index.handler",
+            environment={
+                'QUEUE_URL': queue.queue_url
+            },
             code=_lambda.Code.from_inline(
                 """
 import json
@@ -111,9 +114,6 @@ def handler(event, context):
         }
                 """
             ),
-            environment={
-                'QUEUE_URL': queue.queue_url
-            }
         )
 
         queue.grant_send_messages(post_lambda)
